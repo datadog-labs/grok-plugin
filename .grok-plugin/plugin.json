@@ -1,0 +1,19 @@
+{
+  "name": "datadog",
+  "version": "0.7.14",
+  "description": "Use Datadog directly in Grok Build through a preconfigured Datadog MCP server. Query logs, metrics, traces, dashboards, and more through natural conversation. This plugin is in preview.",
+  "author": {
+    "name": "Datadog"
+  },
+  "repository": "https://github.com/datadog-labs/grok-plugin.git",
+  "keywords": [
+    "datadog",
+    "infrastructure",
+    "mcp",
+    "observability",
+    "productivity"
+  ],
+  "license": "Apache-2.0",
+  "homepage": "https://docs.datadoghq.com/mcp_server/",
+  "mcpServers": "./.dd_grok_mcp.json"
+}
