@@ -2,10 +2,68 @@
   "mcpServers": {
     "datadog-grok": {
       "type": "http",
-      "url": "https://${DD_MCP_DOMAIN:-not-setup}/v1/mcp?referrer_ide=grok-plugin&plugin_version=0.7.14&toolsets=${DD_MCP_TOOLSETS:-}",
+      "url": "https://${DD_MCP_DOMAIN:-{{domain}}}/v1/mcp",
       "headers": {
         "DD_API_KEY": "${DD_API_KEY:-}",
-        "DD_APPLICATION_KEY": "${DD_APPLICATION_KEY:-}"
+        "DD_APPLICATION_KEY": "${DD_APPLICATION_KEY:-}",
+        "X-Datadog-MCP-Toolsets": "all",
+        "X-Datadog-MCP-Referrer-Name": "grok-plugin",
+        "X-Datadog-MCP-Referrer-Version": "0.7.19"
+      },
+      "setup": {
+        "fields": [
+          {
+            "id": "site",
+            "label": "Datadog site",
+            "type": "select",
+            "required": true,
+            "default": "us1",
+            "options": [
+              {
+                "label": "US1 (mcp.datadoghq.com)",
+                "value": "us1"
+              },
+              {
+                "label": "US3 (mcp.us3.datadoghq.com)",
+                "value": "us3"
+              },
+              {
+                "label": "US5 (mcp.us5.datadoghq.com)",
+                "value": "us5"
+              },
+              {
+                "label": "EU (mcp.datadoghq.eu)",
+                "value": "eu"
+              },
+              {
+                "label": "AP1 (mcp.ap1.datadoghq.com)",
+                "value": "ap1"
+              },
+              {
+                "label": "AP2 (mcp.ap2.datadoghq.com)",
+                "value": "ap2"
+              },
+              {
+                "label": "UK1 (mcp.uk1.datadoghq.com)",
+                "value": "uk1"
+              }
+            ]
+          }
+        ],
+        "variables": {
+          "domain": {
+            "from": "site",
+            "map": {
+              "us1": "mcp.datadoghq.com",
+              "us3": "mcp.us3.datadoghq.com",
+              "us5": "mcp.us5.datadoghq.com",
+              "eu": "mcp.datadoghq.eu",
+              "ap1": "mcp.ap1.datadoghq.com",
+              "ap2": "mcp.ap2.datadoghq.com",
+              "uk1": "mcp.uk1.datadoghq.com"
+            }
+          }
+        }
       }
     }
   }

@@ -1,8 +1,10 @@
-# MCP JSON Registration Reference
+# Datadog Plugin General Instructions
 
-The MCP JSON registration file is shared across all plugin skills. If you need to check the server state, locate the registration file, edit a value, or map a Datadog site to its MCP domain, use the flows below.
+## Reading MCP resources
 
-### Stay on script
+When a step says "use the `datadog://...` resource on the plugin's Datadog MCP server", read it with the client's generic MCP resource-read capability (e.g. a generic `read_mcp_resource`-style tool call with `server: <id-of-the-server>` and the given URI). This is a generic MCP mechanism, not a Datadog-specific tool — do not search for a Datadog-branded "toolsets" or "whoami" tool, and do not look for a resource-discovery step first. If no generic resource-read tool is available in this client, list the available tools and call whichever one reads an MCP resource by URI.
+
+## Stay on script
 
 Describe state and actions in plain language ("the Datadog MCP server is not set up", "the Datadog site has been updated"). Never reveal, at any step:
 
@@ -13,68 +15,27 @@ Describe state and actions in plain language ("the Datadog MCP server is not set
 
 Beyond that, emit only what the current step instructs. Do not add setup tips, follow-ups, or "helpful" notes from your general knowledge of the AI client — when the user needs to reload, re-authenticate, or take any other follow-up action, the skill emits that instruction at the correct step. Preempting or paraphrasing it is a bug.
 
+## Resolve the plugin's Datadog MCP server
+
+The plugin's Datadog MCP server is identified by `datadog-grok`.
+
 ## Determine `datadog-server-state`
 
-Silently determine the `datadog-server-state` of the `datadog-grok` MCP server using **only** the steps below (also, do NOT use any other Datadog MCP server). Do not use any other source of information (status files, cached state, error messages from previous calls, etc.) to determine the `datadog-server-state`:
+Silently determine the `datadog-server-state` of the plugin's Datadog MCP server using **only** the steps below (also, do NOT use any other Datadog MCP server). Do not use any other source of information (status files, cached state, error messages from previous calls, etc.) to determine the `datadog-server-state`:
 
-1. Try a lightweight MCP call on `datadog-grok` (e.g. list tools, or read a resource using `server: "datadog-grok"`).
+1. Try a lightweight MCP call on the Datadog MCP server (e.g. list tools, or read a resource using `server: <id-of-the-server>`).
 2. If the server returns an actual, non-empty, non-generic Datadog-specific data (tools, resources, or content) → `datadog-server-state` is **working**.
-3. If the MCP call fails or returns an empty or a generic response (like "no resources found", empty tool list, or any other content-free response), silently read the registration file (see below for its location). Check the raw file content for the literal string `not-setup`:
-   - If the file contains `not-setup` → `datadog-server-state` is **not-setup**.
-   - Otherwise → `datadog-server-state` is **not-working**.
+3. If the MCP call fails or returns an empty or a generic response (like "no resources found", empty tool list, or any other content-free response), the `datadog-server-state` is **not-working**.
 
 Do not tell the user which `datadog-server-state` was determined, what was checked, or what was found — just follow the skill's instructions for that state.
 
-## MCP registration file: `.dd_grok_mcp.json`
+## Configure the MCP Domain
 
-The MCP registration file is at `<plugin-root>/.dd_grok_mcp.json`. If `<plugin-root>` is not already known, derive it from this markdown file's path by removing `skills/<skill-name>/references/mcp-settings.md` from the end — the remaining prefix is `<plugin-root>`.
-
-The registration file contains a URL with two shell-style template variables:
-
-```
-${DD_MCP_DOMAIN:-<current domain>}
-${DD_MCP_TOOLSETS:-<current toolsets>}
-```
-
-### Editing rule
-
-Each variable has the form `${NAME:-default}`. When editing, replace **only the default value** — the characters between `:-` and the closing `}`. The `${`, variable name, `:-`, and `}` must always remain intact.
-
-The default value **can be empty**. An empty default (`:-}` with nothing between) is valid and meaningful — it is NOT a mistake. For `DD_MCP_TOOLSETS`, empty means "use the server's default toolsets" (see examples below).
-
-Examples:
-
-Replacing a value:
-
-```
-${DD_MCP_DOMAIN:-mcp.datadoghq.eu}  →  ${DD_MCP_DOMAIN:-mcp.datadoghq.com}
-```
-
-Setting an explicit toolset list (was empty / using defaults):
-
-```
-${DD_MCP_TOOLSETS:-}  →  ${DD_MCP_TOOLSETS:-core,alerting}
-```
-
-Clearing the toolset list back to server defaults:
-
-```
-${DD_MCP_TOOLSETS:-core,alerting}  →  ${DD_MCP_TOOLSETS:-}
-```
-
-### The `not-setup` sentinel
-
-A fresh installation has `not-setup` as the default domain:
-
-```
-${DD_MCP_DOMAIN:-not-setup}
-```
-
-This value prevents the MCP server from connecting. It exists only before first-time setup and is replaced by `/ddsetup` with a real MCP domain. Once replaced, it never returns to `not-setup`.
+In Grok, the Datadog MCP domain is stored as a custom preference managed by Grok. When the user selects a domain, ask Grok to update the preference setting then instruct the user to reauthorize the Datadog MCP server.
 
 ## Site-to-domain mapping
 
-The following table shows the Datadog site codes and their respective MCP domains:
+The following table shows the Datadog site codes and their respective MCP domains. **This table is exhaustive:** present exactly these sites and domains, verbatim — do not add, substitute, or infer additional sites you may know about from general knowledge.
 
 | Site | MCP domain            |
 | ---- | --------------------- |
@@ -84,6 +45,7 @@ The following table shows the Datadog site codes and their respective MCP domain
 | eu   | mcp.datadoghq.eu      |
 | ap1  | mcp.ap1.datadoghq.com |
 | ap2  | mcp.ap2.datadoghq.com |
+| uk1  | mcp.uk1.datadoghq.com |
 
 Present all available Datadog sites and their MCP domains, then ask the user which one they use.
 
