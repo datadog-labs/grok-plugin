@@ -5,7 +5,7 @@ Query your Datadog data directly from Grok Build using natural language. Ask abo
 ## What you need
 
 - A [Datadog](https://www.datadoghq.com/) account
-- [Grok Build](https://x.ai/cli) CLI
+- [Grok Build](https://x.ai/cli) CLI (v1.0.5 or later, the latest version is recommended)
 
 ## Getting started
 
@@ -15,16 +15,14 @@ Query your Datadog data directly from Grok Build using natural language. Ask abo
    /plugin install datadog
    ```
 
-2. Run `/ddsetup` in the Grok Build chat to connect the plugin to your Datadog account. The agent will guide you through selecting the correct Datadog MCP domain.
-
-> If you skipped setup, or want to change the domain later, run `/ddsetup` again. The agent will guide you through it.
+2. Type `/mcps` on the Grok Build command-line, select the **datadog-grok** MCP server and authenticate. The agent will guide you through selecting the correct Datadog MCP domain. If you want to change the domain later, just tell the agent you want to change the Datadog domain (or run `/ddconfig`). The agent will guide you through it.
 
 ## Using the plugin
 
 Once connected, just ask the agent anything about your Datadog data:
 
 ```
-Show me error logs from the last hour
+Show me error logs for the "checkout" service from the last hour
 ```
 
 ```
@@ -41,40 +39,29 @@ List my dashboards
 
 ## Can't connect?
 
-**Never connected before?** Run the `/ddsetup` command. It will help you provide the correct Datadog MCP domain and set up the MCP server.
+**Never connected before?** Type `/mcps` on the Grok Build command-line, select the **datadog-grok** MCP server and authenticate. The agent will guide you through selecting the correct Datadog MCP domain.
 
 **Was working before but stopped?** Run the `/ddconfig` command. It will check your site, authentication status, and network access to help diagnose the issue.
-
-## Changing settings
-
-The plugin provides a few commands you can run in the agent to manage configuration:
-
-- `/ddconfig` — change your Datadog site or switch organizations
-- `/ddtoolsets` — enable or disable groups of tools
 
 ## Advanced usage
 
 ### Key authentication
 
-Instead of OAuth, you can authenticate using a Datadog API key and application key. Set all three environment variables before starting Grok Build:
+Instead of OAuth, you can authenticate using a Datadog API key and application key. Set these environment variables before starting Grok Build:
 
 ```bash
-DD_MCP_DOMAIN=your-mcp-domain \
 DD_API_KEY=your-api-key \
 DD_APPLICATION_KEY=your-application-key \
 grok
 ```
 
-The `DD_MCP_DOMAIN` value must be the MCP domain (e.g. `mcp.datadoghq.com`, `mcp.us3.datadoghq.com`, `mcp.datadoghq.eu`), not a URL — do not include `https://`. When using key authentication, `/ddsetup` is not required — the plugin connects directly.
+### Datadog MCP Domain
 
-### Environment variable overrides
+Grok provides a UI for selecting the Datadog MCP Domain upon first use. This can be overridden by setting an environment variable.
 
-The plugin stores its configuration as shell-style defaults in its registration file. You can override those defaults by setting the environment variables directly before starting Grok Build:
+- `DD_MCP_DOMAIN` — overrides the Datadog MCP domain that is manually selected.
 
-- `DD_MCP_DOMAIN` — overrides the Datadog MCP domain. If set, the plugin uses this value regardless of what `/ddsetup` or `/ddconfig` configured.
-- `DD_MCP_TOOLSETS` — overrides the enabled toolsets (comma-separated). If set, the plugin uses this value regardless of what `/ddtoolsets` configured.
-
-When these variables are set, `/ddsetup`, `/ddconfig`, and `/ddtoolsets` still edit the defaults in the registration file, but those defaults won't take effect until the variables are removed.
+Note that manual selection of the domain must be done at least one time to enable the plugin, but after that `DD_MCP_DOMAIN` will always override it.
 
 ## Good to know
 
