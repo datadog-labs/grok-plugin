@@ -8,7 +8,7 @@
         "DD_APPLICATION_KEY": "${DD_APPLICATION_KEY:-}",
         "X-Datadog-MCP-Toolsets": "all",
         "X-Datadog-MCP-Referrer-Name": "grok-plugin",
-        "X-Datadog-MCP-Referrer-Version": "0.7.19"
+        "X-Datadog-MCP-Referrer-Version": "0.7.20"
       },
       "setup": {
         "fields": [

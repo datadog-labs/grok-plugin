@@ -53,8 +53,12 @@ jobs:
         id: check
         run: |
           TAG="${{ steps.version.outputs.tag }}"
-          MATCH=$(gh api "repos/${{ github.repository }}/releases?per_page=100" --paginate \
-            --jq '[.[] | select(.tag_name == env.TAG)] | length')
+          # Match on tag_name explicitly (not `gh release view`) so this also
+          # catches draft releases, which have a tag_name but no git tag ref
+          # yet — otherwise every push before the draft is published would
+          # create a duplicate draft for the same version.
+          MATCH=$(gh api repos/${{ github.repository }}/releases --paginate --slurp \
+            --jq "[.[][] | select(.tag_name == \"${TAG}\")] | length")
           if [ "$MATCH" -gt 0 ]; then
             echo "exists=true" >> "$GITHUB_OUTPUT"
             echo "Release ${TAG} already exists (or is already drafted), skipping"
@@ -63,7 +67,6 @@ jobs:
           fi
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TAG: ${{ steps.version.outputs.tag }}
 
       - name: Create draft release
         if: steps.check.outputs.exists == 'false'
