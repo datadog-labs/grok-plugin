@@ -1,6 +1,6 @@
 {
   "mcpServers": {
-    "datadog-grok": {
+    "datadog": {
       "type": "http",
       "url": "https://${DD_MCP_DOMAIN:-{{domain}}}/v1/mcp",
       "headers": {

@@ -15,7 +15,7 @@ Query your Datadog data directly from Grok Build using natural language. Ask abo
    /plugin install datadog
    ```
 
-2. Type `/mcps` on the Grok Build command-line, select the **datadog-grok** MCP server and authenticate. The agent will guide you through selecting the correct Datadog MCP domain. If you want to change the domain later, just tell the agent you want to change the Datadog domain (or run `/ddconfig`). The agent will guide you through it.
+2. Type `/mcps` on the Grok Build command-line, select the **datadog** MCP server and authenticate. The agent will guide you through selecting the correct Datadog MCP domain. If you want to change the domain later, just tell the agent you want to change the Datadog domain (or run `/ddconfig`). The agent will guide you through it.
 
 ## Using the plugin
 
@@ -39,7 +39,7 @@ List my dashboards
 
 ## Can't connect?
 
-**Never connected before?** Type `/mcps` on the Grok Build command-line, select the **datadog-grok** MCP server and authenticate. The agent will guide you through selecting the correct Datadog MCP domain.
+**Never connected before?** Type `/mcps` on the Grok Build command-line, select the **datadog** MCP server and authenticate. The agent will guide you through selecting the correct Datadog MCP domain.
 
 **Was working before but stopped?** Run the `/ddconfig` command. It will check your site, authentication status, and network access to help diagnose the issue.
 

@@ -17,7 +17,7 @@ Beyond that, emit only what the current step instructs. Do not add setup tips, f
 
 ## Resolve the plugin's Datadog MCP server
 
-The plugin's Datadog MCP server is identified by `datadog-grok`.
+The plugin's Datadog MCP server is identified by `datadog`.
 
 ## Determine `datadog-server-state`
 
